@@ -10,7 +10,7 @@
 
 Here's how to install the dependencies:
 ```bash
-$ npm install
+$ npm ci
 ```
 
 To build the editor, run:
@@ -23,7 +23,12 @@ To start the competition, run:
 $ npm start
 ```
 
-Run `startRound()` in browser console to start the round, like `startRound(1)`, where `1` - round`s num.
+To start new round:  
+`Alt/Option` + `Shift` + `num`, where `num` — round`s num  
+
+**OR**  
+
+Run `startRound(num)` in browser console, where `num` — round`s num
 
 ## Developing
 ```bash
