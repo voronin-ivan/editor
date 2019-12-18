@@ -23,6 +23,11 @@ To start the competition, run:
 $ npm start
 ```
 
+Preview is available at */preview.html*
+
+All results are stored in localStorage with keys like `name + round num`, e.g. `pownedy-round-2`.
+After the competition it is recommended to delete the data with `localStorage.clear()`
+
 To start new round:  
 `Alt/Option` + `Shift` + `num`, where `num` — round`s num  
 
