@@ -72,6 +72,18 @@ class Editor
 
     @numsKeyCodes = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57]
 
+    # начало куска говна
+    @queryRound = new URLSearchParams(window.location.search).get('round') || "0"
+
+    if localStorage["round"] isnt @queryRound or not localStorage["name"]
+      @getName()
+      localStorage["content"] = ""
+      localStorage["round"] = @queryRound
+
+    @name = localStorage["name"]
+    @$nameTag.text(@name) if @name
+    # конец куска говна
+
     @editor = @setupAce()
     @loadContent()
     @getRoundContent()
@@ -79,13 +91,9 @@ class Editor
 
     @editor.getSession().on "change", @onChange
     $(window).on "beforeunload", -> "Hold your horses!"
-    $(window).on "keydown", @onKeyDown
 
     $(".instructions-container, .instructions-button").on "click", @onClickInstructions
     @$reference.on "click", @onClickReference
-    @$nameTag.on "click", => @getName true
-
-    @getName()
 
     window.requestAnimationFrame? @onFrame
 
@@ -110,17 +118,13 @@ class Editor
     canvas
 
   getRoundContent: ->
-    round = localStorage["round"] || 0
 
-    @roundNumber = round
-    @$layout.css("background-image", "url(assets/rounds/" + round + ".png)")
-    @$instructions.attr("src", "assets/instructions/" + round + ".html")
+    @$layout.css("background-image", "url(/static/rounds/" + @queryRound + "/preview.png)")
+    @$instructions.attr("src", "/static/rounds/" + @queryRound + "/instruction.html")
 
   getName: (forceUpdate) ->
-    name = (not forceUpdate and localStorage["name"]) || prompt "What's your name?"
+    name = prompt "What's your name?"
     localStorage["name"] = name
-    @name = name
-    @$nameTag.text(name) if name
 
   loadContent: ->
     return unless (content = localStorage["content"])
@@ -129,7 +133,7 @@ class Editor
   saveContent: =>
     content = @editor.getValue()
     localStorage["content"] = content
-    localStorage[@name + "-round-" + @roundNumber] = content
+    localStorage[@name + "-round-" + @queryRound] = content
 
   onFrame: (time) =>
     @drawParticles time - @lastDraw
@@ -278,18 +282,5 @@ class Editor
 
     _.defer =>
       @throttledSpawnParticles(token.type) if token
-
-  onKeyDown: (event) =>
-    {keyCode, altKey, shiftKey} = event
-
-    if altKey and shiftKey and keyCode > 47 and keyCode < 58
-      roundNumber = @numsKeyCodes.indexOf(keyCode)
-
-      if confirm('Do you want to start round ' + roundNumber + '?')
-        localStorage["name"] = ""
-        localStorage["content"] = ""
-        localStorage["round"] = roundNumber
-
-        location.reload()
 
 $ -> new Editor

@@ -37,12 +37,9 @@
   </div>
 
   <script>
-    function startRound(round) {
-      if (!round) round = 0;
-
+    function reload() {
       localStorage["name"] = "";
       localStorage["content"] = "";
-      localStorage["round"] = round;
 
       location.reload();
 
